@@ -6,10 +6,12 @@ import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
+import com.udacity.project4.utils.TAG
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
+import timber.log.Timber
 
 class MyApp : Application() {
 
@@ -43,5 +45,13 @@ class MyApp : Application() {
             androidContext(this@MyApp)
             modules(listOf(myModule))
         }
+
+        initTimber()
+    }
+
+    private fun initTimber() {
+        if (BuildConfig.DEBUG)
+            Timber.plant(Timber.DebugTree())
+        Timber.tag(TAG)
     }
 }
