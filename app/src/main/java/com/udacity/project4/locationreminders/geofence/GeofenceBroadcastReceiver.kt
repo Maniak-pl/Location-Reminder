@@ -3,6 +3,9 @@ package com.udacity.project4.locationreminders.geofence
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingEvent
+import timber.log.Timber
 
 /**
  * Triggered by the Geofence.  Since we can have many Geofences at once, we pull the request
@@ -16,8 +19,17 @@ import android.content.Intent
 
 class GeofenceBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
+        val geofenceEvent = GeofencingEvent.fromIntent(intent)
+        if (geofenceEvent.hasError()) {
+            Timber.d("Error on receive !")
+            return
+        }
 
-//TODO: implement the onReceive method to receive the geofencing events at the background
+        when (geofenceEvent.geofenceTransition) {
+            Geofence.GEOFENCE_TRANSITION_ENTER -> {
+                GeofenceTransitionsJobIntentService.enqueueWork(context, intent)
+            }
+        }
 
     }
 }

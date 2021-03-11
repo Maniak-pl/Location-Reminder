@@ -4,9 +4,8 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -71,3 +70,24 @@ fun View.fadeOut() {
 fun Intent.clearStack(additionalFlags: Int = 0) {
     flags = additionalFlags or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 }
+
+fun Context.toast(message: Int): Toast = Toast
+    .makeText(this, message, Toast.LENGTH_SHORT)
+    .apply {
+        show()
+    }
+
+fun Context.toast(message: CharSequence): Toast = Toast
+    .makeText(this, message, Toast.LENGTH_SHORT)
+    .apply {
+        show()
+    }
+
+fun Fragment.toast(message: CharSequence) {
+    context?.toast(message)
+}
+
+fun Fragment.toast(message: Int) {
+    context?.toast(message)
+}
+
