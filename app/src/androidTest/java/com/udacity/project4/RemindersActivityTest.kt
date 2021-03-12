@@ -2,15 +2,26 @@ package com.udacity.project4
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import androidx.test.rule.ActivityTestRule
+import com.udacity.project4.locationreminders.RemindersActivity
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
 import com.udacity.project4.locationreminders.reminderslist.RemindersListViewModel
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.startKoin
@@ -24,6 +35,10 @@ import org.koin.test.get
 //END TO END test to black box test the app
 class RemindersActivityTest :
     AutoCloseKoinTest() {// Extended Koin Test - embed autoclose @after method to close Koin after every test
+
+    @Rule
+    @JvmField
+    var mActivityTestRule = ActivityTestRule(RemindersActivity::class.java)
 
     private lateinit var repository: ReminderDataSource
     private lateinit var appContext: Application
@@ -65,7 +80,23 @@ class RemindersActivityTest :
         }
     }
 
+    @Test
+    fun validateEnteredData() = runBlockingTest {
 
-//    TODO: add End to End testing to the app
+        onView(withId(R.id.addReminderFAB)).perform(click())
+        onView(withId(R.id.saveReminder)).perform(click())
 
+        onView(ViewMatchers.withText("Please enter title"))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+        Thread.sleep(3000)
+
+        onView(withId(R.id.reminderTitle)).perform(
+            ViewActions.replaceText("Title")
+        )
+        onView(withId(R.id.saveReminder)).perform(click())
+
+        onView(ViewMatchers.withText("Please select location"))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+    }
 }
